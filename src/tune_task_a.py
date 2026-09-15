@@ -1,4 +1,5 @@
 import pandas as pd
+import joblib
 
 from pathlib import Path
 from scipy.sparse import hstack
@@ -198,6 +199,46 @@ print("=" * 60)
 
 print("Best C value:", best_c)
 print("Best Macro-F1:", round(best_score, 4))
+
+# --------------------------------------------------
+# SAVE BEST MODEL AND VECTORIZERS
+# --------------------------------------------------
+
+MODEL_FOLDER = PROJECT_ROOT / "models"
+
+MODEL_FOLDER.mkdir(parents=True, exist_ok=True)
+
+joblib.dump(
+    best_model,
+    MODEL_FOLDER / "task_a_logistic_regression.pkl"
+)
+
+joblib.dump(
+    word_vectorizer,
+    MODEL_FOLDER / "task_a_word_vectorizer.pkl"
+)
+
+joblib.dump(
+    character_vectorizer,
+    MODEL_FOLDER / "task_a_character_vectorizer.pkl"
+)
+
+best_configuration = {
+    "best_c": best_c,
+    "best_macro_f1": best_score,
+    "word_ngram_range": (1, 3),
+    "character_ngram_range": (2, 6),
+    "word_max_features": 50000,
+    "character_max_features": 50000
+}
+
+joblib.dump(
+    best_configuration,
+    MODEL_FOLDER / "task_a_configuration.pkl"
+)
+
+print("\nBest model and vectorizers saved successfully!")
+print("Saved inside:", MODEL_FOLDER)
 
 print("\nAll results:")
 print(results_data)
